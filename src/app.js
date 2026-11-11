@@ -27,9 +27,9 @@ app.use(loadUser);
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/admin', require('./routes/admin'));
-app.use('/api/listings', require('./routes/listings'));
-app.use('/api', require('./routes/offers'));
-app.use('/api', require('./routes/reviews'));
+// app.use('/api/listings', require('./routes/listings'));
+// app.use('/api', require('./routes/offers'));
+// app.use('/api', require('./routes/reviews'));
 app.use('/api', (req, res) => res.status(404).json({ error: 'Not found' }));
 
 app.use((err, req, res, next) => {

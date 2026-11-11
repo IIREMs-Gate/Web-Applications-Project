@@ -30,5 +30,12 @@
     "multer": "^2.5.0",
     "sqlite3": "^6.0.1",
     "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "supertest": "^7.3.2"
+  },
+  "allowScripts": {
+    "bcrypt@6.0.0": true,
+    "sqlite3@6.0.1": true
   }
 }
