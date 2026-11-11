@@ -10,5 +10,6 @@ module.exports = {
   port: Number(process.env.PORT) || 3000,
   sessionSecret: secret,
   dbPath: process.env.DB_PATH || 'marketplace.db',
+  uploadDir: path.resolve(process.env.UPLOAD_DIR || 'uploads'),
   production: process.env.NODE_ENV === 'production',
 };
