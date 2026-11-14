@@ -1,5 +1,17 @@
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
 const bcrypt = require('bcrypt');
-const { run, init, close } = require('./db');
+const { run, all, init, close } = require('./db');
+const { uploadDir } = require('./config');
+const uploads = require('./uploads');
+
+// Open-licence photos in seed-photos
+const copySeedPhoto = (name) => {
+  const file = `${crypto.randomUUID()}.jpg`;
+  fs.copyFileSync(path.join(__dirname, '..', 'seed-photos', `${name}.jpg`), path.join(uploadDir, file));
+  return file;
+};
 
 // Demo passwords
 const PASSWORDS = { admin: 'AdminPass123!', user: 'UserPass123!' };
@@ -13,16 +25,16 @@ const USERS = [
   ['frank', 'frank@example.com', '+44 7700 900006', 'user'],
 ];
 
-// [seller, title, description, price in cents, status]
+// [seller, title, description, price in cents, status, photo file in seed-photos/]
 const LISTINGS = [
-  ['carol', 'Vintage film camera', 'Pentax K1000, works perfectly, includes 50mm lens.', 18000, 'active'],
-  ['carol', 'Mountain bike', '2019 hardtail, 27.5in wheels, recently serviced.', 32000, 'active'],
-  ['dave', 'Gaming laptop', '16GB RAM, RTX 3060, small scratch on the lid.', 65000, 'active'],
-  ['dave', 'Standing desk', 'Electric height adjustable, 140x70cm, oak top.', 22000, 'sold'],
-  ['erin', 'Acoustic guitar', 'Yamaha F310 with gig bag and spare strings.', 9500, 'active'],
-  ['erin', 'Board game bundle', 'Catan, Ticket to Ride and Carcassonne, all complete.', 6000, 'active'],
-  ['frank', 'Textbook set', 'Year 3 Computer Science textbooks, lightly highlighted.', 4500, 'active'],
-  ['frank', 'Office chair', 'Ergonomic mesh chair, lumbar support, 2 years old.', 7500, 'active'],
+  ['carol', 'Vintage film camera', 'Pentax K1000, works perfectly, includes 50mm lens.', 18000, 'active', 'camera'],
+  ['carol', 'Mountain bike', '2019 hardtail, 27.5in wheels, recently serviced.', 32000, 'active', 'bike'],
+  ['dave', 'Gaming laptop', '16GB RAM, RTX 3060, small scratch on the lid.', 65000, 'active', 'laptop'],
+  ['dave', 'Standing desk', 'Electric height adjustable, 140x70cm, oak top.', 22000, 'sold', 'desk'],
+  ['erin', 'Acoustic guitar', 'Yamaha F310 with gig bag and spare strings.', 9500, 'active', 'guitar'],
+  ['erin', 'Board game bundle', 'Catan, Ticket to Ride and Carcassonne, all complete.', 6000, 'active', 'boardgames'],
+  ['frank', 'Textbook set', 'Year 3 Computer Science textbooks, lightly highlighted.', 4500, 'active', 'textbooks'],
+  ['frank', 'Office chair', 'Ergonomic mesh chair, lumbar support, 2 years old.', 7500, 'active', 'chair'],
 ];
 
 // [listing index, buyer, amount in cents, message, status]
@@ -49,6 +61,8 @@ const REVIEWS = [
 
 (async () => {
   await init();
+  // Re-running the seed must not pile up old photo files.
+  await Promise.all((await all('SELECT photo FROM listings WHERE photo IS NOT NULL')).map((l) => uploads.remove(l.photo)));
   for (const table of ['reviews', 'offers', 'listings', 'users']) await run(`DELETE FROM ${table}`);
 
   const id = {};
@@ -60,10 +74,10 @@ const REVIEWS = [
   }
 
   const listingIds = [];
-  for (const [seller, title, description, price, status] of LISTINGS) {
+  for (const [seller, title, description, price, status, photo] of LISTINGS) {
     listingIds.push((await run(
-      'INSERT INTO listings (seller_id, title, description, price_cents, status) VALUES (?, ?, ?, ?, ?)',
-      [id[seller], title, description, price, status])).lastID);
+      'INSERT INTO listings (seller_id, title, description, price_cents, status, photo) VALUES (?, ?, ?, ?, ?, ?)',
+      [id[seller], title, description, price, status, copySeedPhoto(photo)])).lastID);
   }
 
   for (const [i, buyer, amount, message, status] of OFFERS) {
