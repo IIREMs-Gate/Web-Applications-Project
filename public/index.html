@@ -3,10 +3,42 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Marketplace</title>
+  <title>Trove, pre-loved finds from people everywhere</title>
+  <meta name="description" content="Trove is a second-hand marketplace: list what you no longer need, get private offers, and hand it over to the buyer.">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
 </head>
 <body>
-  <h1>Marketplace</h1>
-  <p>Frontend to be build.</p>
+  <header class="topnav">
+    <div class="topnav-in">
+      <a class="brand" href="#/">
+        <img class="brand-mark" src="logo.svg" alt="" width="38" height="38">
+        <span>trove</span>
+      </a>
+      <nav id="nav" aria-label="Main"></nav>
+      <div class="actions" id="actions"></div>
+    </div>
+  </header>
+
+  <main id="main"></main>
+
+  <footer class="foot">
+    <div class="foot-in">
+      <a class="brand" href="#/">
+        <img class="brand-mark" src="logo.svg" alt="" width="30" height="30">
+        <span>trove</span>
+      </a>
+      <nav aria-label="Footer">
+        <a href="#/browse">Browse</a>
+        <a href="#/sell">Sell an item</a>
+        <a href="#/credits">Photo credits</a>
+      </nav>
+      <span>© 2026 Trove</span>
+    </div>
+  </footer>
+  <noscript>This site needs JavaScript.</noscript>
 </body>
 </html>
